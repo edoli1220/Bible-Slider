@@ -1,0 +1,143 @@
+body {
+  padding: 50px;
+}
+
+a {
+  color: #00B7FF;
+}
+
+p { 
+  font-family: 나눔고딕 extrabold, NanumGothic;
+  font-weight: bold;
+  font-size: 64px;
+  line-height: normal;
+}
+
+.navigator {
+  display: block;
+  position: absolute;
+  background: rgba(0,0,0,.3);
+  padding: 4px;
+  padding-top: 0;
+  width: 120px;
+  height: 104px;
+  bottom: 0;
+  right: 0;
+  font-size: 16px;
+  font-family: 나눔고딕, NanumGothic;
+  z-index: 200;
+}
+
+.navigator .navbar {
+  width: 100%;
+  height: 16px;
+  background: rgba(255, 255, 255, .3);
+  margin-bottom: 4px;
+}
+
+.navigator ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.navigator ul  li  {
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+.navigator ul  li span{
+  display: inline;
+  margin-right: 4px;
+}
+
+.navigator ul  li  input {
+  display: inline;
+  width: 94px;
+  color: #ccc;
+  background: rgba(0,0,0,.3);
+  border: none;
+  
+}
+
+.navigator ul  li  input.book {
+  width: 72px;
+}
+
+.navigator ul  li div.show-book-list {
+  display: inline-block;
+  background: rgba(255, 255, 255, .2);
+  width: 22px;
+  height: 18px;
+  margin-bottom: -4px;
+  cursor: pointer;
+}
+
+.navigator div.move{
+  color: #ccc;
+  font-size: 0.9em;
+  padding: 1px 0px;
+  text-align: center;
+  background: rgba(0, 76, 128,.3);
+  border: none;
+  cursor: pointer;
+}
+.navigator div.move:hover {
+  background: rgba(40, 116, 168,.3);
+}
+
+.book-list {
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 10%;
+  width: 960px;
+  height: 480px;
+  border: 2px solid #000;
+  background: #ccc;
+  display: none;
+  z-index: 100;
+}
+
+.book-list ul {
+  list-style: none;
+  padding: 0;
+  margin: 12px;
+}
+
+.book-list ul  li {
+  display: block;
+  font-family: 나눔고딕, NanumGothic;
+  font-weight: bold;
+  font-size: 24px;
+  margin: 4px;
+  color: #465;
+}
+
+.book-list ul  li.book{
+  display: inline-block;
+  cursor: pointer;
+  color: #333;
+}
+
+.book-list ul li.book:hover {
+  color: #38a;
+}
+
+.book-list .hide-book-list {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  background: url(../images/close.png);
+}
+
+.book-list .hide-book-list:hover {
+  background: url(../images/close_hover.png);
+}
+
+::selection {
+  background: rgba(40, 116, 168,.3);
+}

@@ -1,0 +1,85 @@
+extends layout
+
+block content
+  div(class="reveal")
+    div(class="slides")
+      section 
+        h2 찾을수가 없습니다.
+          
+  div(class="navigator")
+    //input(class="version")
+    div(class="navbar")
+    ul
+      li
+        span 책:
+        input(class="book", type="text", placeholder="책", value="#{book}")
+        div(class="show-book-list")
+      li
+        span 장:
+        input(class="chapter", type="text", placeholder="장", value="#{chapter}")
+      li
+        span 절:
+        input(class="verse", type="text", placeholder="절")
+    div(class="move") 이동
+    
+  div(class="book-list")
+    ul
+      li(class="era") 구약성경
+      each val, key in booklist
+        - if (key == 40)
+          br
+          br
+          li(class="era") 신약성경
+        li(class="book") #{val}
+        
+  script(src='/javascripts/reveal.js')
+  script(src='/javascripts/jquery.min.js')
+  script(src='/javascripts/jquery-ui.min.js')
+  script
+    Reveal.initialize({
+      controls: true,
+      progress: true,
+      history: true,
+      keyboard: true,
+      loop: false,
+      autoSlide: 0,
+      mouseWheel: false,
+      rollingLinks: true,
+      transition: '#{transition}'
+    });
+    
+    $(function() {
+      var verse = 0;
+      if (window.location.hash) {
+        verse = parseInt(window.location.hash.match(/\#\/(.*)$/)[1]);
+        if (isNaN(verse)) {
+          verse = 0;
+        }
+      } 
+      $('input.verse').attr("value", String(verse + 1))
+      $('.navigator').draggable();
+      
+      $('.show-book-list').click(function() {
+        $('.book-list').fadeIn();
+      });
+      
+      $('.book').click(function() {
+        $('.book-list').fadeOut();
+        $('.book').val($(this).text());
+      });
+      
+      $('.move').click(function() {
+        var book, chapter, verse;
+        book = $('.book').val();
+        chapter = $('.chapter').val();
+        verse = String(parseInt($('.verse').val()) - 1);
+        window.location = "/?transition=#{transition}&book=" + book + "&chapter=" + chapter + "#/" + verse;
+      });
+    });
+    
+    Reveal.addEventListener('slidechanged', function(event) {
+      $('input.verse').attr("value", String(event.indexh + 1));
+    });
+    
+    
+    
