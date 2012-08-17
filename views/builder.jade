@@ -1,0 +1,328 @@
+extends layout
+
+block style
+  link(rel='stylesheet', href='/stylesheets/builder.css')
+
+block content
+  
+  section
+    div(class= "build")
+      a(id="start_presentation") 시작하기
+
+    ul(id= "build-slides")
+
+block controls
+  div(id="build-bible", class="navigator")
+      div(class="navbar") 성경
+      ul
+        li
+          span 책:
+          input(id="book-bible", class="book", type="text", placeholder="책")
+          div(class="show-book-list")
+        li
+          span 장:
+          input(id="chapter-bible", class="chapter", type="text", placeholder="장")
+        li
+          span 절:
+          input(id="start-verse-bible", class="verse", type="text", placeholder="절")
+          span -
+          input(id="end-verse-bible", class="verse", type="text", placeholder="절")
+      div(id="add-bible", class="move") 추가
+        
+    div(class="book-list")
+      div(class="hide-book-list")
+      ul
+        li(class="era") 구약성경
+        each val, key in booklist
+          - if (key == 40)
+            br
+            br
+            li(class="era") 신약성경
+          li(class="book") #{val}
+
+  div(id="build-hymn", class="navigator")
+
+    div(class="navbar") 찬송가
+    ul
+      li
+        span 장:
+        input(id="chapter-hymn", class="chapter", type="text", placeholder="장")
+    div(id="add-hymn", class="move") 추가
+
+
+  div(id="build-customscreen", class="navigator")
+
+    div(class="navbar") 임의화면
+    ul
+      li
+        input(id="title-customscreen", class="chapter", type="text", placeholder="제목")
+        textarea(id="content-customscreen", class="chapter", type="textarea", placeholder="내용")
+    div(id="add-customscreen", class="move") 추가
+
+  div(id="build-component", class="navigator")
+    div(class="navbar") 여러가지
+    div(id="add-lord-prayer", class="button") 주기도문
+    div(id="add-apostolic-creed", class="button") 사도신경
+    div(id="add-blackscreen", class="button") 검정화면
+
+  li(id="slide-template")
+    span 창세기 1장 절
+    div(class="delete-slide")
+
+block script
+  script
+    $(document).ready(function() {
+      var verse = 0;
+      var focus = "";
+      var bookIndex = JSON.parse('#{bookIndex}'.split('&quot;').join('"'));
+      var reqList = [];
+      if (window.location.hash) {
+        verse = parseInt(window.location.hash.match(/\#\/(.*)$/)[1]);
+        if (isNaN(verse)) {
+          verse = 0;
+        }
+      } 
+
+      $('input.verse').attr("value", String(verse + 1));
+      $('.navigator').draggable();
+      
+      $('.show-book-list').click(function () {
+        $('.book-list').fadeIn();
+      });
+      
+      $('.hide-book-list').click(function () {
+        $('.book-list').fadeOut();
+      });
+      
+      $('.book').click(function () {
+        $('.book-list').fadeOut();
+        $('.book').val($(this).text());
+      });
+      
+      var template = $('#slide-template');
+      var slide_list = $('#build-slides');
+      var build_bible = $('#build-bible');
+      var build_hymn = $('#build-hymn');
+      var build_customscreen = $('#build-customscreen');
+      var slide_list_li = slide_list.find('li');
+
+      var addList = function (data, text) {
+          li = template.clone();
+          reqList.push(data);
+          li.css('display','list-item');
+          li.attr('slide-data', JSON.stringify(data));
+          li.find('span').text(text);
+          slide_list.append(li);
+          slide_list_li = slide_list.find('li');
+          li.find('.delete-slide').click(function () {
+            $(this).parent().remove();
+
+            var len = reqList.length
+            for (var i = 0; i < len; i += 1) {
+              if (reqList[i] == data) {
+                reqList.splice(i, 1);
+                console.log(reqList);
+              }
+            }
+
+          });
+          var start_top, current, arrange = [];
+          li.draggable({
+            axis: "y",
+            start: function (event, ui) {
+              arrange = [];
+              start_top = ui.offset.top;
+              slide_list_li.each(function (index, element) {
+                if ($(element).attr('index')) {
+                  arrange.push(parseInt($(element).attr('index')));
+                } else {
+                  arrange.push(index);
+                }
+                if ($(element).hasClass('ui-draggable-dragging')) {
+                  current = index;
+                } else {
+                  $(element).attr('start_top', $(element).offset().top);
+                  if ($(element).css('top') != 'auto') {
+                    $(element).attr('top', parseInt($(element).css('top').replace('px','')));
+                  } else {
+                    $(element).attr('top', 0);
+                  }
+                  console.log($(element).attr('top'));
+                }
+              });
+            }, drag: function (event, ui) {
+              slide_list_li.each(function (index, element) {
+                if ($(element).hasClass('ui-draggable-dragging')) {
+                  return;
+                }
+                var top = $(element).offset().top;
+                var st = $(element).attr('start_top');
+                if (st > start_top && top < ui.offset.top && !$(element).hasClass('ui-draggable-moveup')) {
+                  arrange[current] += 1;
+                  arrange[index] -= 1;
+                  $(element).addClass('ui-draggable-moveup');
+                  $(element).attr('top', parseInt($(element).attr('top')) - 34)
+                  $(element).stop();
+                  $(element).animate({
+                    top: $(element).attr('top')
+                  });
+                }
+                if (st > start_top && top > ui.offset.top && $(element).hasClass('ui-draggable-moveup')) {
+                  arrange[current] -= 1;
+                  arrange[index] += 1;
+                  $(element).removeClass('ui-draggable-moveup');
+                  $(element).attr('top', parseInt($(element).attr('top')) + 34)
+                  $(element).stop();
+                  $(element).animate({
+                    top: $(element).attr('top')
+                  });
+                }
+                if (st < start_top && top > ui.offset.top && !$(element).hasClass('ui-draggable-movedown')) {
+                  arrange[current] -= 1;
+                  arrange[index] += 1;
+                  $(element).addClass('ui-draggable-movedown');
+                  $(element).attr('top', parseInt($(element).attr('top')) + 34)
+                  $(element).stop();
+                  $(element).animate({
+                    top: $(element).attr('top')
+                  });
+                }
+                if (st < start_top && top < ui.offset.top && $(element).hasClass('ui-draggable-movedown')) {
+                  arrange[current] += 1;
+                  arrange[index] -= 1;
+                  $(element).removeClass('ui-draggable-movedown');
+                  $(element).attr('top', parseInt($(element).attr('top')) - 34)
+                  $(element).stop();
+                  $(element).animate({
+                    top: $(element).attr('top')
+                  });
+                }
+              });
+            }, stop: function (event, ui) {
+              var dy = (arrange[current] - current) * 34;
+              slide_list_li.each(function (index, element) {
+                if ($(element).hasClass('ui-draggable-dragging')) {
+                  $(element).animate({
+                    top: dy
+                  });
+                } else {
+                  $(element).attr('start_top', $(element).offset().top);
+                }
+              });
+              slide_list_li.removeClass('ui-draggable-moveup');
+              slide_list_li.removeClass('ui-draggable-movedown');
+
+              var templist = new Array(arrange.length);
+              var len = arrange.length;
+              console.log(arrange);
+              for (var i = 0; i < len; i += 1) {
+                var j;
+                if (slide_list_li.eq(i).attr('index')) {
+                  j = parseInt(slide_list_li.eq(i).attr('index'));
+                } else {
+                  j = i;
+                }
+                templist[arrange[i]] = reqList[j];
+                slide_list_li.eq(i).attr('index', arrange[i]);
+              }
+              reqList = templist;
+              console.log(reqList);
+            }
+          });
+      }
+
+      $('#add-bible').click(function () {
+        var li, book, chapter, start_verse, end_verse, data;
+        book = build_bible.find('#book-bible').val();
+        chapter = build_bible.find('#chapter-bible').val();
+        start_verse = build_bible.find('#start-verse-bible').val();
+        end_verse = build_bible.find('#end-verse-bible').val();
+        if (book != "" & chapter != "" & start_verse != "" & end_verse != "") {
+          if (!isNaN(parseInt(book))) {
+            for (index in bookIndex) {
+              console.log(bookIndex[index]);
+              if (index == book) {
+                book = bookIndex[index];
+                break;
+              }
+            }
+          }
+          data = {
+            type: 'bible',
+            book: book,
+            chapter: chapter,
+            start_verse: start_verse,
+            end_verse: end_verse
+          };
+          addList(data, book + " " + chapter + "장 " + start_verse + "절 - " + end_verse + "절");
+        }
+      });
+
+      $('#add-hymn').click(function () {
+        var li, chapter, data;
+        chapter = build_hymn.find('#chapter-hymn').val();
+        if (chapter != "") {
+          data = {
+            type: 'hymn',
+            chapter: chapter
+          };
+          addList(data, "찬송가 " + chapter + "장 ");
+        }
+      });
+
+      $('#add-customscreen').click(function () {
+        var li, title, content, data;
+        title = build_customscreen.find('#title-customscreen').val();
+        content = build_customscreen.find('#content-customscreen').val();
+        if (title != "" & content != "") {
+          data = {
+            type: 'customscreen',
+            title: title,
+            content: content
+          };
+          addList(data, title  + ";" + content);
+        }
+      });
+      
+      $('#add-lord-prayer').click(function () {
+        data = {
+          type: 'lord_prayer',
+          title: '주기도문'
+        };
+        addList(data, "주기도문");
+      });
+
+      
+      $('#add-apostolic-creed').click(function () {
+        data = {
+          type: 'apostolic_creed',
+          title: '사도신경'
+        };
+        addList(data, "사도신경");
+      });
+      
+      
+      $('#add-blackscreen').click(function () {
+        data = {
+          type: 'blackscreen'
+        };
+        addList(data, "검정화면");
+      });      
+
+      $('#start_presentation').click(function () {
+        window.location = '/presentation?data=' + JSON.stringify(reqList);
+      });
+
+      var focus_target;
+
+      $('.navigator input').focusin(function () {
+        focus_target = $(this).parent().parent().parent().find('div.move');
+      });
+
+      $(this).keydown(function (event) {
+        if (event.which == 13) {
+          focus_target.click();
+        }
+      });
+
+    });

@@ -1,0 +1,75 @@
+#start-verse-bible, #end-verse-bible{
+  width: 41px;
+}
+
+.build a {
+  cursor: pointer;
+}
+
+#slide-template {
+  display: none;
+}
+#build-slides {
+  margin-top: 36px;
+  list-style: none;
+  font-family: 나눔고딕, NanumGothic;
+  font-weight: bold;
+  font-size: 24px;
+}
+#build-slides li {
+  width: 480px; 
+  padding: 4px;
+  background: rgba(0,0,0,0.3);
+  line-height: 1em;
+  border: 1px solid #000;
+}
+#build-slides li:hover {
+  background: rgba(255,255,255,0.1);
+}
+#build-slides .delete-slide {
+  float: right;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  background: url(../images/close.png);
+  margin: 4px 0;
+}
+
+#build-slides .delete-slide:hover {
+  background: url(../images/close_hover.png);
+}
+
+#build-bible {
+  bottom: 72px;
+  left: 256px;
+}
+
+#build-hymn{
+  bottom: 72px;
+  left: 420px;
+}
+
+#build-customscreen{
+  bottom: 72px;
+  right: 420px;
+}
+
+#build-component{
+  bottom: 72px;
+  right: 256px;
+}
+
+#title-customscreen{
+  width:120px;
+}
+
+#content-customscreen {
+  vertical-align: top;
+  padding: 0;
+  width:120px;
+  height: 40px;
+  display: inline;
+  color: #ccc;
+  background: rgba(0,0,0,.3);
+  border: none;
+}

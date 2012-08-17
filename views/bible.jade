@@ -1,0 +1,85 @@
+﻿extends layout
+
+block content
+  each val, key in verses
+    section 
+      h2 #{title} #{key}절
+      p #{val}
+
+block controls
+  div(class="navigator")
+    //input(class="version")
+    div(class="navbar")
+    ul
+      li
+        span 책:
+        input(class="book", type="text", placeholder="책", value="#{book}")
+        div(class="show-book-list")
+      li
+        span 장:
+        input(class="chapter", type="text", placeholder="장", value="#{chapter}")
+      li
+        span 절:
+        input(class="verse", type="text", placeholder="절")
+    div(class="move") 이동
+      
+  div(class="book-list")
+    div(class="hide-book-list")
+    ul
+      li(class="era") 구약성경
+      each val, key in booklist
+        - if (key == 40)
+          br
+          br
+          li(class="era") 신약성경
+        li(class="book") #{val}
+
+block script
+  script
+    $(document).ready(function() {
+      var verse = 0;
+      var focus = "";
+      if (window.location.hash) {
+        verse = parseInt(window.location.hash.match(/\#\/(.*)$/)[1]);
+        if (isNaN(verse)) {
+          verse = 0;
+        }
+      } 
+
+      $('input.verse').attr("value", String(verse + 1));
+      $('.navigator').draggable();
+      
+      $('.show-book-list').click(function() {
+        $('.book-list').fadeIn();
+      });
+      
+      $('.hide-book-list').click(function() {
+        $('.book-list').fadeOut();
+      });
+      
+      $('.book').click(function() {
+        $('.book-list').fadeOut();
+        $('.book').val($(this).text());
+      });
+      
+      $('.move').click(function() {
+        var book, chapter, verse, url;
+        book = $('.book').val();
+        chapter = $('.chapter').val();
+        verse = String(parseInt($('.verse').val()) - 1);
+        url = "/bible?transition=#{transition}&book=" + book + "&chapter=" + chapter + "#/" + verse;
+        console.log(url);
+        window.location = url;
+      });
+      
+      $('.navigator input').focusin(function() {
+        focus = "navigator";
+      });
+      
+      $(this).keydown(function(event) {
+        if (event.which == 13) {
+          $('.move').click();
+        }
+      });
+
+    });
