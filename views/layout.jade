@@ -5,5 +5,69 @@ html
     link(rel='stylesheet', href='/stylesheets/reset.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/main.css')
+    block style
   body
-    block content
+    div(class="reveal")
+      div(class="state-background")
+      div(class="slides")
+        block content
+    
+      aside(class="controls")
+        a(class="left", href="#")&#x25C4
+        a(class="right", href="#")&#x25BA
+        a(class="up", href="#")&#x25B2
+        a(class="down", href="#")&#x25BC
+        
+      div(class="progress")
+        span
+        
+    a(class="to_home", href= "/")
+    block controls
+
+  script(src='/javascripts/reveal.js')
+  script(src='/javascripts/jquery.min.js')
+  script(src='/javascripts/jquery-ui.min.js')
+  script(src='/javascripts/head.min.js')
+  script
+    // Load reveal.js as well as a classList polyfill if needed
+    head.js( !document.body.classList ? '/javascripts/classList.js' : null )
+      .js( '/javascripts/reveal.js', function() {
+
+      // Parse the query string into a key/value object
+      var query = {};
+      location.search.replace( /[A-Z0-9]+?=(\w*)/gi, function(a) {
+        query[ a.split( '=' ).shift() ] = a.split( '=' ).pop();
+      } );
+
+      // Fires when a slide with data-state=customevent is activated
+      Reveal.addEventListener( 'customevent', function() {
+        console.log( '"customevent" has fired' );
+      } );
+
+      // Fires each time a new slide is activated
+      Reveal.addEventListener( 'slidechanged', function( event ) {
+        // event.previousSlide, event.currentSlide, event.indexh, event.indexv
+      } );
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        
+        theme: query.theme || 'default', // default/neon/beige
+        transition: query.transition || 'default' // default/cube/page/concave/linear(2d)
+      });
+
+    } );
+
+
+    Reveal.addEventListener('slidechanged', function(event) {
+      $('input.verse').attr("value", String(event.indexh + 1));
+    });
+
+
+  block script
+
+

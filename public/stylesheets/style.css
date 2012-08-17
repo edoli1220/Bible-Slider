@@ -12,7 +12,22 @@ p {
   font-size: 64px;
   line-height: normal;
 }
+section.main {
+  font-family: 나눔고딕 extrabold, NanumGothic;
+  font-weight: bold;
+  font-size: 36px;
+}
 
+section.main .roll{
+  margin: 16px;
+}
+
+.build {
+  font-family: 나눔고딕 extrabold, NanumGothic;
+  font-weight: bold;
+  font-size: 48px;
+  line-height: 1em;
+}
 .navigator {
   display: block;
   position: absolute;
@@ -33,6 +48,14 @@ p {
   height: 16px;
   background: rgba(255, 255, 255, .3);
   margin-bottom: 4px;
+  text-align: center;
+  cursor: default;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .navigator ul {
@@ -65,14 +88,20 @@ p {
 
 .navigator ul  li div.show-book-list {
   display: inline-block;
-  background: rgba(255, 255, 255, .2);
+  background: url(../images/open.png);
   width: 22px;
   height: 18px;
   margin-bottom: -4px;
+  opacity: 0.5;
   cursor: pointer;
+}
+.navigator ul  li div.show-book-list:hover {
+  background: url(../images/open_hover.png);
 }
 
 .navigator div.move{
+  position: absolute;
+  width: 120px;
   color: #ccc;
   font-size: 0.9em;
   padding: 1px 0px;
@@ -80,8 +109,23 @@ p {
   background: rgba(0, 76, 128,.3);
   border: none;
   cursor: pointer;
+  bottom: 4px;
 }
 .navigator div.move:hover {
+  background: rgba(40, 116, 168,.3);
+}
+.navigator div.button {
+  width: 120px;
+  color: #ccc;
+  font-size: 0.9em;
+  margin: 2px 0px;
+  padding: 3px 0px;
+  text-align: center;
+  background: rgba(0, 76, 128,.3);
+  border: none;
+  cursor: pointer;
+}
+.navigator div.button:hover {
   background: rgba(40, 116, 168,.3);
 }
 
@@ -141,3 +185,30 @@ p {
 ::selection {
   background: rgba(40, 116, 168,.3);
 }
+
+.data {
+  display:none ;
+}
+.state-background {
+  width: 100%;
+  height: 100%;
+}
+.blackscreen .state-background{
+  background: #000;
+}
+
+.to_home {
+  width: 64px;
+  height: 64px;
+  display: block;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  opacity: 0.1;
+  background: url(../images/to_home.png);
+  cursor: pointer;;
+}
+
+.to_home:hover {
+  opacity: 0.4;
+};

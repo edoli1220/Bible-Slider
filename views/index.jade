@@ -1,135 +1,18 @@
-extends layout
+﻿extends layout
 
 block content
-  div(class="reveal")
-    div(class="slides")
-      each val, key in verses
-        section 
-          h2 #{title} #{key}절
-          p #{val}
-    
-    aside(class="controls")
-      a(class="left", href="#")&#x25C4
-      a(class="right", href="#")&#x25BA
-      a(class="up", href="#")&#x25B2
-      a(class="down", href="#")&#x25BC
-      
-    div(class="progress")
-      span
-          
-  div(class="navigator")
-    //input(class="version")
-    div(class="navbar")
-    ul
-      li
-        span 책:
-        input(class="book", type="text", placeholder="책", value="#{book}")
-        div(class="show-book-list")
-      li
-        span 장:
-        input(class="chapter", type="text", placeholder="장", value="#{chapter}")
-      li
-        span 절:
-        input(class="verse", type="text", placeholder="절")
-    div(class="move") 이동
-    
-  div(class="book-list")
-    div(class="hide-book-list")
-    ul
-      li(class="era") 구약성경
-      each val, key in booklist
-        - if (key == 40)
-          br
-          br
-          li(class="era") 신약성경
-        li(class="book") #{val}
-        
-  script(src='/javascripts/reveal.js')
-  script(src='/javascripts/jquery.min.js')
-  script(src='/javascripts/jquery-ui.min.js')
-  script(src='/javascripts/head.min.js')
-  
-  script
-    // Load reveal.js as well as a classList polyfill if needed
-    head.js( !document.body.classList ? '/javascripts/classList.js' : null )
-      .js( '/javascripts/reveal.js', function() {
+  section(class= "main")
+    br
+    a(href= "/hymn") 찬송가
+    br
+    a(href= "/bible") 성경
+    br
+    a(href= "/lord_prayer") 주기도문
+    br
+    a(href= "/apostolic_creed") 사도신경
+    br
+    a(href= "/builder") 프리젠테이션
 
-      // Parse the query string into a key/value object
-      var query = {};
-      location.search.replace( /[A-Z0-9]+?=(\w*)/gi, function(a) {
-        query[ a.split( '=' ).shift() ] = a.split( '=' ).pop();
-      } );
+block controls
 
-      // Fires when a slide with data-state=customevent is activated
-      Reveal.addEventListener( 'customevent', function() {
-        console.log( '"customevent" has fired' );
-      } );
-
-      // Fires each time a new slide is activated
-      Reveal.addEventListener( 'slidechanged', function( event ) {
-        // event.previousSlide, event.currentSlide, event.indexh, event.indexv
-      } );
-
-      // Full list of configuration options available here:
-      // https://github.com/hakimel/reveal.js#configuration
-      Reveal.initialize({
-        controls: false,
-        progress: true,
-        history: true,
-        
-        theme: query.theme || 'default', // default/neon/beige
-        transition: query.transition || 'default' // default/cube/page/concave/linear(2d)
-      });
-
-    } );
-    
-    $(document).ready(function() {
-      var verse = 0;
-      var focus = "";
-      if (window.location.hash) {
-        verse = parseInt(window.location.hash.match(/\#\/(.*)$/)[1]);
-        if (isNaN(verse)) {
-          verse = 0;
-        }
-      } 
-      $('input.verse').attr("value", String(verse + 1));
-      $('.navigator').draggable();
-      
-      $('.show-book-list').click(function() {
-        $('.book-list').fadeIn();
-      });
-      
-      $('.hide-book-list').click(function() {
-        $('.book-list').fadeOut();
-      });
-      
-      $('.book').click(function() {
-        $('.book-list').fadeOut();
-        $('.book').val($(this).text());
-      });
-      
-      $('.move').click(function() {
-        var book, chapter, verse;
-        book = $('.book').val();
-        chapter = $('.chapter').val();
-        verse = String(parseInt($('.verse').val()) - 1);
-        window.location = "/?transition=#{transition}&book=" + book + "&chapter=" + chapter + "#/" + verse;
-      });
-      
-      $('.navigator input').focusin(function() {
-        focus = "navigator";
-      });
-      
-      $(this).keydown(function(event) {
-        if (event.which == 13) {
-          $('.move').click();
-        }
-      });
-    });
-    
-    Reveal.addEventListener('slidechanged', function(event) {
-      $('input.verse').attr("value", String(event.indexh + 1));
-    });
-    
-    
-    
+block script
